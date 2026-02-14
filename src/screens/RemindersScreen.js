@@ -16,10 +16,12 @@ import {
   TextInput,
   Platform,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppContext } from '../context/AppContext';
 import { COLORS, TATKAL_TIMES } from '../constants/theme';
 
 export default function RemindersScreen() {
+  const insets = useSafeAreaInsets();
   const { reminders, addTatkalAlarm, deleteReminderById } = useAppContext();
   const [modalVisible, setModalVisible] = useState(false);
   const [travelDate, setTravelDate] = useState('');
@@ -137,7 +139,7 @@ export default function RemindersScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <Text style={styles.headerTitle}>⏰ My Reminders</Text>
         <Text style={styles.headerSubtitle}>
           {reminders.length} active reminder{reminders.length !== 1 ? 's' : ''}

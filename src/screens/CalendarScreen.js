@@ -19,6 +19,7 @@ import {
   Platform,
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppContext } from '../context/AppContext';
 import { COLORS } from '../constants/theme';
 
@@ -31,6 +32,7 @@ export default function CalendarScreen() {
     removeHoliday,
   } = useAppContext();
 
+  const insets = useSafeAreaInsets();
   const [selectedDay, setSelectedDay] = useState(null);
   const [editMode, setEditMode] = useState(false);
 
@@ -163,7 +165,7 @@ export default function CalendarScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <Text style={styles.headerTitle}>📅 Holiday Calendar</Text>
         {stateName ? (
           <Text style={styles.headerSubtitle}>📍 {stateName}</Text>

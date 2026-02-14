@@ -16,6 +16,7 @@ import {
   RefreshControl,
   Alert,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppContext } from '../context/AppContext';
 import { COLORS, BOOKING_WINDOW_DAYS, TATKAL_ADVANCE_DAYS } from '../constants/theme';
 
@@ -31,6 +32,7 @@ export default function HomeScreen() {
     stateName,
   } = useAppContext();
 
+  const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState(TABS.BOOKING);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -211,7 +213,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <Text style={styles.headerTitle}>🚂 Upcoming Long Weekends</Text>
         {stateName ? (
           <Text style={styles.headerSubtitle}>📍 {stateName}</Text>

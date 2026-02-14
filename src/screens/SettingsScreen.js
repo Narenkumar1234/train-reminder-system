@@ -16,10 +16,12 @@ import {
 import { useAppContext } from '../context/AppContext';
 import { INDIAN_STATES } from '../constants/states';
 import { COLORS } from '../constants/theme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { cancelAllNotifications } from '../services/NotificationManager';
 import { clearAllReminders } from '../services/storageService';
 
 export default function SettingsScreen() {
+  const insets = useSafeAreaInsets();
   const {
     selectedState,
     stateName,
@@ -87,7 +89,7 @@ export default function SettingsScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <Text style={styles.headerTitle}>⚙️ Settings</Text>
       </View>
 
