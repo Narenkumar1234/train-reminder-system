@@ -19,7 +19,7 @@ const AuthContext = createContext();
 // Configure Google Sign-In (web client ID from Firebase Console)
 // This will be populated once you add the SHA-1 in Firebase
 GoogleSignin.configure({
-  webClientId: '', // Will be set once OAuth client is added in Firebase
+  webClientId: '906649903963-d83sc53uep5of6sdgpisfcsbpjjstnkf.apps.googleusercontent.com', // Will be set once OAuth client is added in Firebase
 });
 
 export function AuthProvider({ children }) {

@@ -12,7 +12,20 @@
           "package_name": "com.nightgamer01.TrainBookingReminder"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "906649903963-spmmk7dph3u1hnga3nrc6e30tkv03a3v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nightgamer01.TrainBookingReminder",
+            "certificate_hash": "88c77026f126e444b4fd938979638613005d5dfc"
+          }
+        },
+        {
+          "client_id": "906649903963-d83sc53uep5of6sdgpisfcsbpjjstnkf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAplfZSHzXTZyGgAy6mpO8Tfb61yTTyDXg"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "906649903963-d83sc53uep5of6sdgpisfcsbpjjstnkf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
