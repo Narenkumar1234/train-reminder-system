@@ -19,14 +19,21 @@
           "sounds": [],
           "enableBackgroundRemoteNotifications": false
         }
-      ]
+      ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      "@react-native-google-signin/google-signin"
     ],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "We need your location to detect your Indian state for state-specific holidays.",
-        "UIBackgroundModes": ["fetch", "remote-notification"]
-      }
+        "UIBackgroundModes": [
+          "fetch"
+        ],
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "bundleIdentifier": "com.nightgamer01.TrainBookingReminder"
     },
     "android": {
       "adaptiveIcon": {
@@ -41,10 +48,17 @@
         "VIBRATE",
         "WAKE_LOCK",
         "SCHEDULE_EXACT_ALARM"
-      ]
+      ],
+      "package": "com.nightgamer01.TrainBookingReminder",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "065cc71d-00a0-49ca-8d40-cf0d4b49edf1"
+      }
     }
   }
 }

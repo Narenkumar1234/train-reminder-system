@@ -9,12 +9,14 @@
  */
 import React, { useEffect, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Platform, Text } from 'react-native';
+import { Platform, Text, ActivityIndicator, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { AuthProvider, useAuth } from './src/context/AuthContext';
 import { AppProvider } from './src/context/AppContext';
+import AuthScreen from './src/screens/AuthScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import CalendarScreen from './src/screens/CalendarScreen';
 import RemindersScreen from './src/screens/RemindersScreen';
@@ -23,15 +25,54 @@ import {
   addNotificationReceivedListener,
   addNotificationResponseListener,
 } from './src/services/NotificationManager';
+import { logAppOpen } from './src/services/analyticsService';
 import { COLORS } from './src/constants/theme';
 
 const Tab = createBottomTabNavigator();
 
 export default function App() {
+  return (
+    <SafeAreaProvider>
+      <AuthProvider>
+        <AppGate />
+      </AuthProvider>
+    </SafeAreaProvider>
+  );
+}
+
+/**
+ * AppGate — Shows AuthScreen if not logged in, main app if logged in
+ */
+function AppGate() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.background }}>
+        <ActivityIndicator size="large" color={COLORS.primary} />
+        <Text style={{ marginTop: 12, color: COLORS.textSecondary, fontSize: 14 }}>Loading...</Text>
+      </View>
+    );
+  }
+
+  if (!user) {
+    return <AuthScreen />;
+  }
+
+  return <MainApp />;
+}
+
+/**
+ * MainApp — The main tabbed app (only shown after authentication)
+ */
+function MainApp() {
   const notificationListener = useRef();
   const responseListener = useRef();
 
   useEffect(() => {
+    // Log app open to analytics
+    logAppOpen();
+
     // Listen for notifications received in foreground
     notificationListener.current = addNotificationReceivedListener((notification) => {
       console.log('[App] Notification received:', notification.request.content.title);
@@ -41,7 +82,6 @@ export default function App() {
     responseListener.current = addNotificationResponseListener((response) => {
       const data = response.notification.request.content.data;
       console.log('[App] Notification tapped:', data);
-      // Could navigate to specific screen based on data.type
     });
 
     return () => {
@@ -55,10 +95,9 @@ export default function App() {
   }, []);
 
   return (
-    <SafeAreaProvider>
-      <AppProvider>
-        <NavigationContainer>
-          <StatusBar style="light" />
+    <AppProvider>
+      <NavigationContainer>
+        <StatusBar style="light" />
           <Tab.Navigator
             screenOptions={{
               headerShown: false,
@@ -119,8 +158,7 @@ export default function App() {
             />
           </Tab.Navigator>
         </NavigationContainer>
-      </AppProvider>
-    </SafeAreaProvider>
+    </AppProvider>
   );
 }
 

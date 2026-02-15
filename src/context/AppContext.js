@@ -39,6 +39,8 @@ import {
 } from '../services/storageService';
 import { INDIAN_STATES } from '../constants/states';
 import { BOOKING_WINDOW_DAYS } from '../constants/theme';
+import { saveUserHolidays, saveUserState, saveUserCustomHolidays } from '../services/firestoreService';
+import { logReminderSet, logStateChange, setUserProperty } from '../services/analyticsService';
 
 const AppContext = createContext();
 
@@ -87,6 +89,8 @@ export function AppProvider({ children }) {
         setSelectedState(stateIso);
         const stateObj = INDIAN_STATES.find((s) => s.value === stateIso);
         if (stateObj) setStateName(stateObj.label);
+        // Track state in analytics
+        setUserProperty('user_state', stateIso);
       }
 
       // Load holidays from persistent cache (API only called on state change)
@@ -156,6 +160,17 @@ export function AppProvider({ children }) {
     setHolidays(mergedHolidays);
     _recomputeWeekends(mergedHolidays);
 
+    // Sync to Firestore
+    try {
+      const stateObj = INDIAN_STATES.find((s) => s.value === stateIso);
+      await saveUserState(stateIso, stateObj?.label || '');
+      await saveUserHolidays(stateIso, mergedHolidays);
+      logStateChange(stateIso);
+      setUserProperty('user_state', stateIso);
+    } catch (err) {
+      console.warn('[AppContext] Firestore sync error:', err);
+    }
+
     // Update quota
     const changeInfo = await canChangeState();
     setStateChangeInfo(changeInfo);
@@ -191,6 +206,15 @@ export function AppProvider({ children }) {
     const mergedHolidays = await _mergeHolidays(apiHolidays || []);
     setHolidays(mergedHolidays);
     _recomputeWeekends(mergedHolidays);
+
+    // Sync custom holidays to Firestore
+    try {
+      const customHolidays = await getCustomHolidays();
+      await saveUserCustomHolidays(customHolidays);
+    } catch (err) {
+      console.warn('[AppContext] Firestore sync error:', err);
+    }
+
     return holiday;
   }, []);
 
@@ -246,6 +270,7 @@ export function AppProvider({ children }) {
 
     await storeReminder(reminder);
     setReminders((prev) => [...prev, reminder]);
+    logReminderSet('booking', { holidayName: opportunity.holidayName, travelDate: opportunity.startDate });
     return reminder;
   }, [reminders]);
 
@@ -276,6 +301,7 @@ export function AppProvider({ children }) {
 
     await storeReminder(reminder);
     setReminders((prev) => [...prev, reminder]);
+    logReminderSet('tatkal', { holidayName: label, travelDate });
     return reminder;
   }, [reminders]);
 

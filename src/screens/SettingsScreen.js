@@ -14,6 +14,7 @@ import {
   TextInput,
 } from 'react-native';
 import { useAppContext } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
 import { INDIAN_STATES } from '../constants/states';
 import { COLORS } from '../constants/theme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -30,8 +31,26 @@ export default function SettingsScreen() {
     stateChangeInfo,
     reminders,
   } = useAppContext();
+  const { user, signOut } = useAuth();
   const [pickerVisible, setPickerVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSignOut = () => {
+    Alert.alert(
+      'Sign Out',
+      'Are you sure you want to sign out?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Sign Out',
+          style: 'destructive',
+          onPress: async () => {
+            await signOut();
+          },
+        },
+      ]
+    );
+  };
 
   const filteredStates = INDIAN_STATES.filter((s) =>
     s.label.toLowerCase().includes(searchQuery.toLowerCase())
@@ -91,6 +110,24 @@ export default function SettingsScreen() {
     <ScrollView style={styles.container}>
       <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <Text style={styles.headerTitle}>⚙️ Settings</Text>
+      </View>
+
+      {/* User Profile */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Account</Text>
+        <View style={styles.infoRow}>
+          <Text style={styles.infoLabel}>Signed in as</Text>
+          <Text style={styles.infoValue} numberOfLines={1}>{user?.displayName || user?.email || 'User'}</Text>
+        </View>
+        {user?.email && (
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>Email</Text>
+            <Text style={[styles.infoValue, { fontSize: 12 }]} numberOfLines={1}>{user.email}</Text>
+          </View>
+        )}
+        <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
+          <Text style={styles.signOutButtonText}>Sign Out</Text>
+        </TouchableOpacity>
       </View>
 
       {/* State Selection */}
@@ -412,5 +449,19 @@ const styles = StyleSheet.create({
   stateItemCode: {
     fontSize: 11,
     color: COLORS.textSecondary,
+  },
+  signOutButton: {
+    backgroundColor: '#ffebee',
+    borderWidth: 1,
+    borderColor: COLORS.error,
+    borderRadius: 10,
+    padding: 12,
+    alignItems: 'center',
+    marginTop: 12,
+  },
+  signOutButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: COLORS.error,
   },
 });

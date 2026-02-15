@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "906649903963",
+    "project_id": "train-booking-reminder-b9532",
+    "storage_bucket": "train-booking-reminder-b9532.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:906649903963:android:33d142012b28923f21f07e",
+        "android_client_info": {
+          "package_name": "com.nightgamer01.TrainBookingReminder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAplfZSHzXTZyGgAy6mpO8Tfb61yTTyDXg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
